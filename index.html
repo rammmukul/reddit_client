@@ -9,6 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <script src="./vue-infinite-scroll.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+    <!-- <link rel="stylesheet" href="./loader.css"> -->
 </head>
 
 <body>
@@ -19,6 +20,9 @@
         <div v-for="post in posts">
             <post :key="post.id" :data="post.data"></post>
         </div>
+        <div class="box has-text-centered">
+            <div class="loader" style="font-size: 5em;"></div>            
+        </div>
     </div>
 </body>
 <script src="./post.js"></script>
@@ -26,12 +30,23 @@
     var app = new Vue({
         el: '#app',
         data: {
-            posts: fetch('https://www.reddit.com/.json').then(res => res.json()).then(res => app.posts = res.data.children)
+            posts: [],
+            after: undefined,
+            url: 'https://www.reddit.com/.json'
         },
         methods: {
         loadMore: function () {
             self.busy = true
-            fetch('https://www.reddit.com/.json').then(res => res.json()).then(res => {app.posts.append(res.data.children);self.busy = false})
+            fetch(this.url + '?after=' + this.after)
+                .then(res => res.json())
+                .then(res => {
+                    console.log(this.after, res.data.after)
+                    this.posts = this.after !== res.data.after ? 
+                        [...this.posts, ...res.data.children] :
+                        this.posts
+                    this.after = res.data.after
+                    self.busy = false
+                })
         }
         }
     })
