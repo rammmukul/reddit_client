@@ -2,49 +2,66 @@
 <html>
 
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>reddit</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
-    <script src="./vue-infinite-scroll.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>reddit</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="https://unpkg.com/vue-router/dist/vue-router.js"></script>
+  <script src="./vue-infinite-scroll.js"></script>
+  <script src="./routes.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+  <link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-    <div id="app" class="container"
-    v-infinite-scroll="loadMore"
-    infinite-scroll-disabled="busy"
-    infinite-scroll-distance="10">
+<body class="has-navbar-fixed-top">
+  <div id="app" class="container" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="10">
+    <nav class="navbar is-fixed-top is-transparent">
+      <div class="navbar-item is-size-3">reddit</div>
+      <div class="navbar-menu">
+          <router-link class="navbar-item" to="/hot">Hot</router-link>
+          <router-link class="navbar-item" to="/new">New</router-link>
+          <router-link class="navbar-item" to="/rising">Rising</router-link> 
+      </div>
+    </nav>
     <posts :posts="posts"></posts>
-    </div>
+  </div>
 </body>
 <script src="./post.js"></script>
 <script src="./posts.js"></script>
 <script>
-    var app = new Vue({
-        el: '#app',
-        data: {
-            posts: [],
-            after: undefined,
-            url: 'https://www.reddit.com/.json'
-        },
-        methods: {
-        loadMore: function () {
-            self.busy = true
-            fetch(this.url + '?after=' + this.after)
-                .then(res => res.json())
-                .then(res => {
-                    console.log(this.after, res.data.after)
-                    this.posts = this.after !== res.data.after ? 
-                        [...this.posts, ...res.data.children] :
-                        this.posts
-                    this.after = res.data.after
-                    self.busy = false
-                })
-        }
-        }
-    })
+  var app = new Vue({
+    el: '#app',
+    data: {
+      posts: [],
+      after: undefined,
+      url: 'https://www.reddit.com/.json'
+    },
+    methods: {
+      loadMore: function () {
+        self.busy = true
+        fetch(this.url + '?after=' + this.after)
+          .then(res => res.json())
+          .then(res => {
+            console.log(this.after, res.data.after)
+            this.posts = this.after !== res.data.after ?
+              [...this.posts, ...res.data.children] :
+              this.posts
+            this.after = res.data.after
+            self.busy = false
+          })
+      }
+    },
+    router,
+    watch: {
+      '$route': function (to, from) {
+        this.after = ''
+        this.posts = []
+        this.url = 'https://www.reddit.com/' + to.path + '/.json'
+        this.loadMore()
+      }
+    }
+  })
 </script>
 
 </html>
