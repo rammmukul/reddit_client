@@ -4,6 +4,23 @@
   animation: slide-in-blurred-right 0.5s cubic-bezier(0.23, 1, 0.32, 1) both;
 }
 
+.comments {
+  display: flex;
+  flex-direction: column;
+}
+
+.comment {
+  display: flex;
+  flex-direction: row;
+}
+
+.indent {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 15px;
+  border-left: 1px solid black;
+}
+
 @-webkit-keyframes slide-in-blurred-right {
   0% {
     -webkit-transform: translateX(1000px) scaleX(2.5) scaleY(0.2);

@@ -1,7 +1,7 @@
 Vue.component('post', {
   props: ['post'],
   template: `
-  <div class="card">
+  <div class="box">
     <a :href=post.url>
       <div class="card-content">
         <div class="media">
@@ -23,9 +23,8 @@ Vue.component('post', {
       </div>
     </a>
     <footer class="card-footer">
-      <a href="#" class="card-footer-item">++</a>
-      <div href="#" class="card-footer-item">{{ post.ups }}</div>
-      <a href="#" class="card-footer-item">--</a>
+      <div href="#" class="card-footer-item">{{ post.ups }} Ups</div>
+      <comments :postId=post.id></comments>
     </footer>
   </div>`
 })

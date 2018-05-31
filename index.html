@@ -27,6 +27,7 @@
     <posts :posts="posts"></posts>
   </div>
 </body>
+<script src="./comments.js"></script>
 <script src="./post.js"></script>
 <script src="./posts.js"></script>
 <script>
@@ -43,7 +44,6 @@
         fetch(this.url + '?after=' + this.after)
           .then(res => res.json())
           .then(res => {
-            console.log(this.after, res.data.after)
             this.posts = this.after !== res.data.after ?
               [...this.posts, ...res.data.children] :
               this.posts
